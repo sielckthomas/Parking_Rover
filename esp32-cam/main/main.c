@@ -19,191 +19,216 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "driver/gpio.h"
+#include "mutex_helper.h"
+#include <unistd.h>
+#include "esp_timer.h"
+#include "esp_sleep.h"
+#include "sdkconfig.h"
 
-#define LED1 2
-#define LED2 4
+#include "perfmon.h"
+
+#define TOTAL_CALL_AMOUNT 200
+#define PERFMON_TRACELEVEL -1 // -1 - will ignore trace level
 
 // Function Declarations //
-///////////////////////////////////////////////////////////////////////
-void learning_led(void);
-void led_blink1(void * params);
-void led_blink2(void * params);
-void led_blink(void * params);
-///////////////////////////////////////////////////////////////////////
-void learning_semaphore(void);
-void listenforHTTP(void * params);
-void http_semaphore_task(void * params);
-///////////////////////////////////////////////////////////////////////
-void learning_task_handlers(void);
-static void notification_sender(void * params);
-static void notification_receiver(void * params);
-///////////////////////////////////////////////////////////////////////
-void learning_queue(void);
-void listenForHTTPQ(void * params);
-void httpQDissect(void * params);
-///////////////////////////////////////////////////////////////////////
 
-// Type Declarations //
-typedef struct{
-        int led;
-        int time;
-        int increment;
-}led_params_t;
+mutexed_float_t * setup_motor_encoders();
+void update_motor_encoder1( void * params);
+void update_motor_encoder2( void * params);
+void measure_speed_calc(void * params);
+void setup_motor_encoder_pins(mutexed_float_t * mem);
+void perfMon(void * called_function);
 
-// Global Variables // 
-SemaphoreHandle_t bin_semaphore;
-static TaskHandle_t notification_receiverHandler = NULL;
-xQueueHandle queue;
+
+// Table with dedicated performance counters
+static uint32_t pm_check_table[] = {
+    XTPERF_CNT_CYCLES, XTPERF_MASK_CYCLES, // total cycles
+    XTPERF_CNT_INSN, XTPERF_MASK_INSN_ALL, // total instructions
+    XTPERF_CNT_D_LOAD_U1, XTPERF_MASK_D_LOAD_LOCAL_MEM, // Mem read
+    XTPERF_CNT_D_STORE_U1, XTPERF_MASK_D_STORE_LOCAL_MEM, // Mem write
+    XTPERF_CNT_BUBBLES, XTPERF_MASK_BUBBLES_ALL &(~XTPERF_MASK_BUBBLES_R_HOLD_REG_DEP),  // wait for other reasons
+    XTPERF_CNT_BUBBLES, XTPERF_MASK_BUBBLES_R_HOLD_REG_DEP,           // Wait for register dependency
+    XTPERF_CNT_OVERFLOW, XTPERF_MASK_OVERFLOW,               // Last test cycle
+};
+
+
 
 // Main loop //
 void app_main(void)
 {
     //Initialize NVS
-    esp_err_t ret = nvs_flash_init();
+    /* esp_err_t ret = nvs_flash_init();
+
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
       ESP_ERROR_CHECK(nvs_flash_erase());
       ret = nvs_flash_init();
     }
-    ESP_ERROR_CHECK(ret);
+    ESP_ERROR_CHECK(ret); */
+    SemaphoreHandle_t speedMutex;
+    float speed = 0;
     printf("Hello Zack!\n");
+    
     //learning_led();
     //learning_semaphore();
     //learning_task_handlers();
-    learning_queue();
-}
+    //learning_queue();
+    //learning_eventGroups();
 
-
-///////////////////////////////////////////////////////////////////////
-void learning_queue(void){
-    queue = xQueueCreate(3,sizeof(int)); // q len, size of each element
-    xTaskCreate(&listenForHTTPQ,"get http off Q", 2048*3, NULL, 2, &notification_receiverHandler);
-    xTaskCreate(&httpQDissect,"handle http data", 2048*3, NULL, 1, NULL);
-}
-    
-void listenForHTTPQ(void * params){
-    int count = 0;
+    mutexed_float_t * motor_memory = setup_motor_encoders();
+    //perfMon((void *)setup_motor_encoders);
+    speedMutex = (SemaphoreHandle_t) (((SemaphoreHandle_t *)motor_memory->mutexSemaphores)[3]);
     for(;;){
-        count++;
-        printf("recieved http message\n");
-        long ok = xQueueSend(queue, &count, 1000/ portTICK_PERIOD_MS);
-        if(ok){
-            printf("added message to queue\n");
-        }else{
-            printf("Failed to add message to queue\n");
-        }
-        vTaskDelay(1000/portTICK_PERIOD_MS);
-    }
-    
-}
-
-void httpQDissect(void * params){
-    for(;;){
-        int rxInt;
-        if (xQueueReceive(queue, &rxInt, 5000/portTICK_PERIOD_MS)){
-                printf("doing something with http %d\n",rxInt);
+        if(xSemaphoreTake(speedMutex, 100/portTICK_PERIOD_MS)){
+            speed = motor_memory->mem[3];
+            xSemaphoreGive(speedMutex);
+            printf("Speed = %f", speed);
+            vTaskDelay(3000/ portTICK_PERIOD_MS); // 3000 ms delay
         }
     }
 }
 
-///////////////////////////////////////////////////////////////////////
-void learning_task_handlers(void){
-    xTaskCreate(notification_receiver,"task recieve", 2048*3, NULL, 1, &notification_receiverHandler);
-    xTaskCreate(notification_sender,"task send", 2048*3, NULL, 1, NULL);
+void perfMon(void * called_function){
+    printf("Start");
+    printf("Start test with printing all available statistic");
+    xtensa_perfmon_config_t pm_config = {};
+    pm_config.counters_size = sizeof(xtensa_perfmon_select_mask_all) / sizeof(uint32_t) / 2;
+    pm_config.select_mask = xtensa_perfmon_select_mask_all;
+    pm_config.repeat_count = TOTAL_CALL_AMOUNT;
+    pm_config.max_deviation = 1;
+    pm_config.call_function = called_function;
+    pm_config.callback = xtensa_perfmon_view_cb;
+    pm_config.callback_params = stdout;
+    pm_config.tracelevel = PERFMON_TRACELEVEL;
+    xtensa_perfmon_exec(&pm_config);
 }
 
-static void notification_sender(void * params){
-    for(;;){
-        xTaskNotify(notification_receiverHandler, (1<<0), eSetBits);
-        vTaskDelay(1000/portTICK_PERIOD_MS);
-        xTaskNotify(notification_receiverHandler, (1<<1),eSetBits);
-        vTaskDelay(1000/portTICK_PERIOD_MS);
-        xTaskNotify(notification_receiverHandler, (1<<2),eSetBits);
-        vTaskDelay(1000/portTICK_PERIOD_MS);
-
+void update_motor_encoder1(void * params){
+    mutexed_float_t * m = (mutexed_float_t * ) params;
+    SemaphoreHandle_t tempSem = (SemaphoreHandle_t) (((SemaphoreHandle_t *)m->mutexSemaphores)[0]);
+    if(xSemaphoreTake(tempSem, 100/portTICK_PERIOD_MS)){
+        m->mem[0] = m->mem[0] + 374;
+        xSemaphoreGive(tempSem);
     }
 }
 
-static void notification_receiver(void * params){
-    unsigned int * notificationValue = calloc(1,sizeof(int));
-    for(;;){
-        // 1st arg allows you to clear a certain bit/bits
-        if(xTaskNotifyWait((0xffffff), 0, notificationValue,portMAX_DELAY)){
-            printf("recieved %d\n", *notificationValue);
-        }
+void update_motor_encoder2(void * params){
+    mutexed_float_t * m = (mutexed_float_t * ) params;
+    SemaphoreHandle_t tempSem = (SemaphoreHandle_t) (((SemaphoreHandle_t *)m->mutexSemaphores)[1]);
+    if(xSemaphoreTake(tempSem, 100/portTICK_PERIOD_MS)){
+        m->mem[1] = m->mem[1] + 374;
+        xSemaphoreGive(tempSem);
     }
 }
 
-
-///////////////////////////////////////////////////////////////////////
-void learning_semaphore(void){
-    // Be careful how you set priorities, you want the semaphore handler task to preempt the get_Http task
-    // listenforHTTP->priority < http_semaphore_task->priority for right operation
-    bin_semaphore = xSemaphoreCreateBinary();
-    xTaskCreate(&http_semaphore_task,"do x w/ http\n", 1024, NULL, 2, NULL);
-    xTaskCreate(&listenforHTTP,"get http\n", 1024, NULL, 1, NULL);
-    
-}
+void measure_speed_calc(void * params){
+    mutexed_float_t * m = (mutexed_float_t * ) params;
+    float motor1 = 1000;
+    float motor2 = 1000;
+    uint64_t time_dif = 1;
+    SemaphoreHandle_t tempSem;
+    struct timeval tv_now;
+    uint64_t time_us = 0;
 
 
-void listenforHTTP(void * params){
     for(;;){
-        printf("recieved http message\n");
-        xSemaphoreGive(bin_semaphore); // Make the semaphore available/ set the flag
-        printf("processed http message\n");
-        vTaskDelay( 5000 / portTICK_PERIOD_MS);
-    }
-}
+        gettimeofday(&tv_now, NULL);
+        time_us = (uint64_t)tv_now.tv_sec * 1000000L + (uint64_t)tv_now.tv_usec;
 
-void http_semaphore_task(void * params){
-        for(;;){
-            // Is my semaphore available on time?/ Is flag set on time?
-            if(xSemaphoreTake( bin_semaphore, 2000/portTICK_PERIOD_MS)){
-                printf("doing something with http\n");
-            } else{
-                printf("time_out\n");
+        tempSem = (SemaphoreHandle_t) (((SemaphoreHandle_t *)m->mutexSemaphores)[0]);
+        if(xSemaphoreTake( tempSem, 100/portTICK_PERIOD_MS)){
+            motor1 = m->mem[0];
+            m->mem[0] = 1000;
+            xSemaphoreGive(tempSem);
+            tempSem = (SemaphoreHandle_t) (((SemaphoreHandle_t *)m->mutexSemaphores)[1]);
+            if(xSemaphoreTake(tempSem, 100/portTICK_PERIOD_MS)){
+                motor2 = m->mem[1];
+                m->mem[1] = 1000;
+                xSemaphoreGive(tempSem);
+                tempSem = (SemaphoreHandle_t) (((SemaphoreHandle_t *)m->mutexSemaphores)[2]);
+                if(xSemaphoreTake(tempSem, 100/portTICK_PERIOD_MS)){
+                    time_dif = time_us - m->mem[2];
+                    gettimeofday(&tv_now, NULL);
+                    m->mem[2] = (uint64_t)tv_now.tv_sec * 1000000L + (uint64_t)tv_now.tv_usec;
+                    xSemaphoreGive(tempSem);
+                    tempSem = (SemaphoreHandle_t) (((SemaphoreHandle_t *)m->mutexSemaphores)[3]);
+                    if(xSemaphoreTake(tempSem, 100/portTICK_PERIOD_MS)){
+                        // Hall feedback is 374-> 34:1 gear ratio with 11 ticks per round (11*34=374)
+                        m->mem[3] = ((motor1 + motor2) + 2) / time_dif / 748;
+                        xSemaphoreGive(tempSem);
+                        printf("Speed: %f\n",m->mem[3]);
+                        vTaskDelay(10000/ portTICK_PERIOD_MS);
+                    }
+                }
             }
-            
-        }
-}
-
-
-///////////////////////////////////////////////////////////////////////
-void learning_led(void){
-
-    // Semaphores are used to communicate between two tasks; flags
-    // Mutex: blocks all other tasks from reading from memory while mutex is in place
-    led_params_t * ledParams1 = calloc(1,sizeof(led_params_t));
-    ledParams1->led = LED1;
-    ledParams1->time = 500;
-    ledParams1->increment = 50;
-    led_params_t * ledParams2 = calloc(1,sizeof(led_params_t));
-    ledParams2->led = LED2;
-    ledParams2->time = 500;
-    ledParams2->increment = 50;
-    
-    gpio_set_direction(2, GPIO_MODE_OUTPUT);
-    gpio_set_direction(4, GPIO_MODE_OUTPUT);
-
-    // When a task is scheduled, it executes once. 
-    // xTaskCreate(led_blink, "led_blink1", 512, ledParams1,1,NULL);
-    xTaskCreatePinnedToCore(led_blink, "led_blink1", 512, ledParams1,1,NULL,0); // Min stack is 512 for led blink
-    xTaskCreatePinnedToCore(led_blink, "led_blink2", 512, ledParams2,2,NULL,0); // bind to core 1
-}
-
-// When a task is scheduled, it executes once. 
-// We implement an infinite loop to keep the tasks running.
-void led_blink(void * params){
-    led_params_t * l = (led_params_t*)params; // Type cast
-    for(;;){
-        gpio_set_level(l->led,1);
-        vTaskDelay(l->time/ portTICK_PERIOD_MS);
-        gpio_set_level(l->led,0);
-        vTaskDelay(l->time/ portTICK_PERIOD_MS);
-        l->time = l->time + l->increment;
-        if (l->time < 51){
-                l->increment = 75;
-        }else if(l->time > 250){
-                l->increment = -50;
         }
     }
 }
+
+void setup_motor_encoder_pins(mutexed_float_t * mem){
+    // Allocate memory for encoder_pin configuration
+    esp_err_t ret = ESP_OK;
+    
+    // Install the GPIO ISR handler service; allows per-pin interrupt handlers
+    gpio_uninstall_isr_service();
+    ESP_ERROR_CHECK(ret);
+    ret = gpio_install_isr_service(ESP_INTR_FLAG_SHARED);
+    ESP_ERROR_CHECK(ret);
+    //ret = gpio_install_isr_service(ESP_INTR_FLAG_SHARED);
+
+    // Initialize pin 15 as an input
+     // Pin 15
+    ret = gpio_set_direction(14, (gpio_mode_t) 1);
+    ESP_ERROR_CHECK(ret);
+
+    ret = gpio_set_direction(15, (gpio_mode_t) 1);
+    ESP_ERROR_CHECK(ret);
+
+    ret = gpio_set_intr_type(14,GPIO_INTR_POSEDGE);
+    ESP_ERROR_CHECK(ret);
+
+    ret = gpio_set_intr_type(15,GPIO_INTR_POSEDGE);
+    ESP_ERROR_CHECK(ret);
+    
+    // Add interupt handler to pin16; register the posedge interrupt
+    ret = gpio_isr_handler_add(14, update_motor_encoder1, (void *) mem);
+    ESP_ERROR_CHECK(ret);
+
+    // Add interupt handler to pin16; register the posedge interrupt
+    ret = gpio_isr_handler_add(15, update_motor_encoder2, (void *) mem);
+    ESP_ERROR_CHECK(ret);
+
+    // Enable the Rising edge interrupts on pins 15&16; ISRs registered to 'update_motor_encoder' functions
+    gpio_intr_enable(14);
+    ESP_ERROR_CHECK(ret);
+
+    ret = gpio_intr_enable(15);
+    ESP_ERROR_CHECK(ret);
+
+    printf("Configured\n\n");
+}
+
+mutexed_float_t * setup_motor_encoders(){
+
+    
+    mutexed_float_t * motor_encoder_mem = create_mutex_uint64(4);
+    struct timeval tv_now;
+
+    
+    // Initialize Memory:
+    motor_encoder_mem->mem[0] = 0;
+    motor_encoder_mem->mem[1] = 0;
+    motor_encoder_mem->mem[3] = 0;
+    
+    // Initialize GPIO Pins 15 and 16 to trigger interupts on rising edge detections
+    setup_motor_encoder_pins(motor_encoder_mem);
+
+    // Get the time where the interrupts were enabled to measure speed
+    gettimeofday(&tv_now, NULL);
+    uint64_t time_us = (uint64_t)tv_now.tv_sec * 1000000L + (uint64_t)tv_now.tv_usec;
+    motor_encoder_mem->mem[2] = time_us;
+
+    // Schedule a task that is in charge of measuring the speed of a motor
+    xTaskCreate(measure_speed_calc,"MTRSPD", 2048*3, motor_encoder_mem, 2, NULL);
+    return motor_encoder_mem;
+}
+

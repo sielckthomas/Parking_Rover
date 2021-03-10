@@ -6,11 +6,13 @@
 #define MOTOR1_ENCODER1 25 // A0
 #define MOTOR1_ENCODER2 26 // A1
 #define MOTOR1_PWM 22
+#define MOTOR1_DIR 32
 
-// MOTOR2 setup pins
-#define MOTOR2_ENCODER1 34 // A2
-#define MOTOR2_ENCODER2 39 // A3
+// MOTOR2 setup pins *A3 & A4 are off limits for wifi purposes ->see gpio.h
+#define MOTOR2_ENCODER1 17 // 
+#define MOTOR2_ENCODER2 21 // 
 #define MOTOR2_PWM 23
+#define MOTOR2_DIR 14
 
 #define WHEEL_DIAMETER 1
 
@@ -142,8 +144,14 @@ motor_t * setup_motor_pins(){
     gpio_pulldown_en(MOTOR2_ENCODER1); 
     gpio_pulldown_en(MOTOR2_ENCODER2);
 
+    // Outputs
+    // Direction Outputs
+    gpio_set_direction(MOTOR1_DIR,GPIO_MODE_OUTPUT);
+    gpio_set_direction(MOTOR2_DIR,GPIO_MODE_OUTPUT);
+    gpio_set_level(MOTOR1_DIR,1);
+    gpio_set_level(MOTOR2_DIR,1);
 
-    // Initialize the PWM outputs for PWMxA and PWMxB
+    // PWM outputs for PWMxA and PWMxB
     pwm_config.frequency = 1000;
     pwm_config.cmpr_a = 10; // Duty cycle % Initialized
     pwm_config.cmpr_b = 10; // Duty cycle % Uninitialized
@@ -169,6 +177,7 @@ motor_t * setup_motor_pins(){
     
     mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0A,50);
     mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0A,50);
+
     return motors;
 }
 

@@ -39,26 +39,24 @@ static uint32_t pm_check_table[] = {
 void app_main(void)
 {
     //Initialize NVS
-    /* esp_err_t ret = nvs_flash_init();
+    static httpd_handle_t server = NULL;
+    esp_err_t ret = nvs_flash_init();
 
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
       ESP_ERROR_CHECK(nvs_flash_erase());
       ret = nvs_flash_init();
     }
-    ESP_ERROR_CHECK(ret); */
+    ESP_ERROR_CHECK(ret);
     printf("Hello Zack!\n");
-    
-    //learning_led();
-    //learning_semaphore();
-    //learning_task_handlers();
-    //learning_queue();
-    //learning_eventGroups();
 
     //float * speed = setup_motor_encoders();
 
     init_sdcard();
     init_camera();
 
+    ESP_ERROR_CHECK(nvs_flash_init());
+    init_camera();
+    initialise_wifi(&server);
     //perfMon((void *)setup_motor_encoders);
     for(;;){
         camera_fb_t *pic = esp_camera_fb_get();
@@ -79,7 +77,36 @@ void app_main(void)
         fclose(file);
         free(pic_name);
     }
+
+    init_sdcard();
+  init_camera();
+
+  while (1)
+  {
+    ESP_LOGI(TAG, "Taking picture...");
+    camera_fb_t *pic = esp_camera_fb_get();
+    int64_t timestamp = esp_timer_get_time();
+
+    char *pic_name = malloc(17 + sizeof(int64_t));
+    sprintf(pic_name, "/sdcard/pic_%lli.jpg", timestamp);
+    FILE *file = fopen(pic_name, "w");
+    if (file != NULL)
+    {
+      fwrite(pic->buf, 1, pic->len, file);
+      ESP_LOGI(TAG, "File saved: %s", pic_name);
+    }
+    else
+    {
+      ESP_LOGE(TAG, "Could not open file =(");
+    }
+    fclose(file);
+    free(pic_name);
+
+    vTaskDelay(120 / portTICK_RATE_MS); // 8 frames per sec
+  }
+    
 }
+
 
 #ifdef PERF_MON_EN
 void perfMon(void * called_function){

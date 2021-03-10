@@ -8,14 +8,32 @@
 #include <esp_http_server.h>
 #include "esp_camera.h"
 
-static const char *TAG = "example:http_jpg";
+// Setup Constants to Connect to Evans Scholars Wifi
+#define STA_SSID "evans_scholars"
+#define STA_SSID_LEN strlen(STA_SSID)
+#define STA_PASSWORD "chickevans67" 
+#define STA_PASSWORD_LEN len(STA_PASSWORD)
 
+// Setup Constants to Connect to Main Controller
+#define AP_SSID "Parking_Rover"
+#define AP_SSID_LEN strlen(AP_SSID)
+#define AP_PASSWORD "Parking_Rover" 
+#define AP_PASSWORD_LEN len(AP_PASSWORD)
+
+/*
+static const char *TAG = "example:http_jpg";
 
 typedef struct
 {
   httpd_req_t *req;
   size_t len;
 } jpg_chunking_t;
+
+
+httpd_uri_t uri_handler_jpg = {
+    .uri = "/jpg",
+    .method = HTTP_GET,
+    .handler = jpg_httpd_handler};
 
 static size_t jpg_encode_stream(void *arg, size_t index, const void *data, size_t len)
 {
@@ -62,11 +80,7 @@ static esp_err_t jpg_httpd_handler(httpd_req_t *req)
   ESP_LOGI(TAG, "JPG: %uKB %ums", (uint32_t)(fb_len / 1024), (uint32_t)((fr_end - fr_start) / 1000));
   return res;
 }
-
-httpd_uri_t uri_handler_jpg = {
-    .uri = "/jpg",
-    .method = HTTP_GET,
-    .handler = jpg_httpd_handler};
+*/
 
 httpd_handle_t start_webserver(void)
 {
@@ -133,20 +147,28 @@ static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
 
 static void initialise_wifi(void *arg)
 {
+  wifi_config_t * ap_config = calloc(1, sizeof(wifi_config_t));
+  wifi_config_t * sta_config = calloc(1, sizeof(wifi_config_t));
+
+  strncpy((char *)ap_config->ap.ssid,AP_SSID,AP_SSID_LEN);
+  strncpy((char *)ap_config->ap.password, AP_PASSWORD, AP_PASSWORD_LEN));
+  ap_config->ap.authmode = WIFI_AUTH_WPA_PSK; // Move up to WPA2 for AES(slower)
+  ap_config->ap.ssid_len = 0;
+  ap_config->ap.max_connection = 4;
+  ap_config->ap.channel = 0; /**< channel of target AP. Set to 1~13 to scan starting from the specified channel before connecting to AP. If the channel of AP is unknown, set it to 0.*/
+
+  strncpy((char *)sta_config.sta.ssid, STA_SSID, STA_SSID_LEN);
+  strncpy((char *)sta_config.sta.password, STA_PASSWORD, STA_PASSWORD_LEN));
+  ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
+  ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &ap_config));
+  ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &sta_config));
+
   tcpip_adapter_init();
   ESP_ERROR_CHECK(esp_event_loop_init(wifi_event_handler, arg));
   wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
   ESP_ERROR_CHECK(esp_wifi_init(&cfg));
   ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-  wifi_config_t wifi_config = {
-      .sta = {
-          .ssid = CONFIG_WIFI_SSID,
-          .password = CONFIG_WIFI_PASSWORD,
-      },
-  };
-  ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
-  ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-  ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+  
   ESP_ERROR_CHECK(esp_wifi_start());
 }
 

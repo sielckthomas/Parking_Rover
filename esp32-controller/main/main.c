@@ -23,6 +23,7 @@
 #include "esp_sleep.h"
 #include "perfmon.h"
 #include "motor_cntrl.h"
+#include "camera_stream.h"
 
 
 //#define CONFIG_FREERTOS_HZ 1000
@@ -74,7 +75,15 @@ void app_main(void)
     //learning_eventGroups();
 
     //float * speed = setup_motor_encoders();
+
     motor_t * motors;
+    int tempDuty1 = 35;
+    int tempDuty2 = 30;
+    int inc1 = -5;
+    int inc2 = -5;
+
+    start_stream();
+    printf("wifi started");
 
     motor_encoders_queue = xQueueCreate(4, sizeof(int * ));
 
@@ -83,11 +92,32 @@ void app_main(void)
 
     //perfMon((void *)setup_motor_encoders);
     for(;;){
-        vTaskDelay(3000/ portTICK_PERIOD_MS); // 3000 ms delay
+        vTaskDelay(2000/ portTICK_PERIOD_MS); // 3000 ms delay
         motors[0].speed = (motors[0].encoder_mem[0].speed + motors[0].encoder_mem[1].speed + .001) / 2;
         motors[1].speed = (motors[1].encoder_mem[0].speed + motors[1].encoder_mem[1].speed + .001) / 2;
-        printf("Motor1 Speed: %f\n", motors[0].speed);
-        printf("Motor2 Speed: %f\n", motors[1].speed);
+        
+        mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0A,tempDuty1);
+        mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0A,tempDuty2);
+        gpio_set_level(MOTOR1_DIR, (inc1 > 0)? 1:0);
+        gpio_set_level(MOTOR2_DIR, (inc2 > 0)? 1:0);
+        
+        if (tempDuty1 > 79){
+            inc1 = -5;
+        }else if(tempDuty1 < 21){
+            inc1 = 5;
+        }
+
+        if (tempDuty1 > 79){
+            inc2 = -5;
+        }else if(tempDuty1 < 21){
+            inc2 = 5;
+        } 
+
+        tempDuty1 = tempDuty1;// + inc1;
+        tempDuty2 = tempDuty2;// + inc2;
+
+        printf("Duty Cycle 1: %d\n", tempDuty1 ); 
+        printf("Duty Cycle 2: %d\n", tempDuty2 );
     }
 }
 

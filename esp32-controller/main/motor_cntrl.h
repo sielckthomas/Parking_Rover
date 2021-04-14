@@ -41,7 +41,6 @@ void update_motor_speed(void * args);
 static void IRAM_ATTR motor_speed_handler(void * arg);
 
 
-
 void update_motor_speed(void * args){
     static encoder_t * encoder_mem;
     static struct timeval tv_now;
@@ -175,8 +174,8 @@ motor_t * setup_motor_pins(){
     mcpwm_isr_register(MCPWM_UNIT_0, motor_speed_handler, encoders1, ESP_INTR_FLAG_IRAM, NULL);
     mcpwm_isr_register(MCPWM_UNIT_1, motor_speed_handler, encoders2, ESP_INTR_FLAG_IRAM, NULL);
     
-    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0A,50);
-    mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0A,50);
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM0A, 50);
+    mcpwm_set_duty(MCPWM_UNIT_1, MCPWM_TIMER_0, MCPWM0A, 50);
 
     return motors;
 }

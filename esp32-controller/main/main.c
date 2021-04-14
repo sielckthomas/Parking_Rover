@@ -23,8 +23,7 @@
 #include "esp_sleep.h"
 #include "perfmon.h"
 #include "motor_cntrl.h"
-#include "camera_stream.h"
-
+#include "camera_stream.c"
 
 //#define CONFIG_FREERTOS_HZ 1000
 //#define CONFIG_ESP_INT_WDT 10000
@@ -74,16 +73,24 @@ void app_main(void)
     //learning_queue();
     //learning_eventGroups();
 
-    //float * speed = setup_motor_encoders();
 
+    //float * speed = setup_motor_encoders();
     motor_t * motors;
     int tempDuty1 = 35;
     int tempDuty2 = 30;
     int inc1 = -5;
     int inc2 = -5;
 
+    
+    ESP_ERROR_CHECK(nvs_flash_init());
+    ESP_ERROR_CHECK(esp_netif_init());
+    
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    	// initialize the tcp stack
+	tcpip_adapter_init();
+
+
     start_stream();
-    printf("wifi started");
 
     motor_encoders_queue = xQueueCreate(4, sizeof(int * ));
 
@@ -120,6 +127,7 @@ void app_main(void)
         printf("Duty Cycle 2: %d\n", tempDuty2 );
     }
 }
+
 
 #ifdef PERF_MON_EN
 void perfMon(void * called_function){

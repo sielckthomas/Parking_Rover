@@ -41,35 +41,6 @@ rule CXX_EXECUTABLE_LINKER__app-template.2eelf
 #############################################
 # Rule for compiling ASM files.
 
-rule ASM_COMPILER____idf_xtensa
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
-  description = Building ASM object $out
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_xtensa
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_xtensa
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling ASM files.
-
 rule ASM_COMPILER____idf_mbedtls
   depfile = $DEP_FILE
   deps = gcc
@@ -88,11 +59,11 @@ rule C_COMPILER____idf_mbedtls
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_mbedtls
+rule C_STATIC_LIBRARY_LINKER____idf_mbedtls
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -164,30 +135,11 @@ rule C_COMPILER____idf_efuse
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_efuse
+rule C_STATIC_LIBRARY_LINKER____idf_efuse
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_bootloader_support
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_bootloader_support
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -202,11 +154,30 @@ rule C_COMPILER____idf_app_update
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_app_update
+rule C_STATIC_LIBRARY_LINKER____idf_app_update
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_bootloader_support
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_bootloader_support
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -221,11 +192,11 @@ rule C_COMPILER____idf_esp_ipc
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_ipc
+rule C_STATIC_LIBRARY_LINKER____idf_esp_ipc
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -240,11 +211,87 @@ rule C_COMPILER____idf_spi_flash
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_spi_flash
+rule C_STATIC_LIBRARY_LINKER____idf_spi_flash
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER____idf_nvs_flash
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++  $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_nvs_flash
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_pthread
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_pthread
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_esp_gdbstub
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_esp_gdbstub
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_espcoredump
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_espcoredump
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -269,18 +316,18 @@ rule C_COMPILER____idf_esp_system
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_system
+rule C_STATIC_LIBRARY_LINKER____idf_esp_system
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER____idf_soc
+rule C_COMPILER____idf_esp_rom
   depfile = $DEP_FILE
   deps = gcc
   command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
@@ -288,18 +335,18 @@ rule C_COMPILER____idf_soc
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_soc
+rule C_STATIC_LIBRARY_LINKER____idf_esp_rom
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__soc_esp32
+rule C_COMPILER____idf_hal
   depfile = $DEP_FILE
   deps = gcc
   command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
@@ -307,11 +354,11 @@ rule C_COMPILER__soc_esp32
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER__soc_esp32
+rule C_STATIC_LIBRARY_LINKER____idf_hal
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -326,11 +373,11 @@ rule C_COMPILER____idf_vfs
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_vfs
+rule C_STATIC_LIBRARY_LINKER____idf_vfs
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -345,11 +392,11 @@ rule C_COMPILER____idf_esp_eth
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_eth
+rule C_STATIC_LIBRARY_LINKER____idf_esp_eth
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -364,11 +411,11 @@ rule C_COMPILER____idf_tcpip_adapter
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_tcpip_adapter
+rule C_STATIC_LIBRARY_LINKER____idf_tcpip_adapter
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -383,11 +430,11 @@ rule C_COMPILER____idf_esp_netif
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_netif
+rule C_STATIC_LIBRARY_LINKER____idf_esp_netif
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -402,11 +449,11 @@ rule C_COMPILER____idf_esp_event
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_event
+rule C_STATIC_LIBRARY_LINKER____idf_esp_event
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -421,30 +468,11 @@ rule C_COMPILER____idf_wpa_supplicant
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_wpa_supplicant
+rule C_STATIC_LIBRARY_LINKER____idf_wpa_supplicant
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling CXX files.
-
-rule CXX_COMPILER____idf_nvs_flash
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++  $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
-  description = Building CXX object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_nvs_flash
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -459,11 +487,11 @@ rule C_COMPILER____idf_esp_wifi
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_wifi
+rule C_STATIC_LIBRARY_LINKER____idf_esp_wifi
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -478,11 +506,11 @@ rule C_COMPILER____idf_lwip
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_lwip
+rule C_STATIC_LIBRARY_LINKER____idf_lwip
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -497,11 +525,11 @@ rule C_COMPILER____idf_log
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_log
+rule C_STATIC_LIBRARY_LINKER____idf_log
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -516,11 +544,68 @@ rule C_COMPILER____idf_heap
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_heap
+rule C_STATIC_LIBRARY_LINKER____idf_heap
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_soc
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_soc
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_esp_hw_support
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_esp_hw_support
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_esp_pm
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_esp_pm
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -535,11 +620,11 @@ rule C_COMPILER____idf_esp_ringbuf
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_ringbuf
+rule C_STATIC_LIBRARY_LINKER____idf_esp_ringbuf
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -554,18 +639,28 @@ rule C_COMPILER____idf_driver
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_driver
+rule C_STATIC_LIBRARY_LINKER____idf_driver
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
+
+
+#############################################
+# Rule for compiling ASM files.
+
+rule ASM_COMPILER____idf_xtensa
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building ASM object $out
 
 
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER____idf_pthread
+rule C_COMPILER____idf_xtensa
   depfile = $DEP_FILE
   deps = gcc
   command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
@@ -573,30 +668,11 @@ rule C_COMPILER____idf_pthread
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_pthread
+rule C_STATIC_LIBRARY_LINKER____idf_xtensa
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_espcoredump
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_espcoredump
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -611,11 +687,11 @@ rule C_COMPILER____idf_perfmon
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_perfmon
+rule C_STATIC_LIBRARY_LINKER____idf_perfmon
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -630,11 +706,11 @@ rule C_COMPILER____idf_esp32
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp32
+rule C_STATIC_LIBRARY_LINKER____idf_esp32
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -649,11 +725,11 @@ rule C_COMPILER____idf_esp_common
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_common
+rule C_STATIC_LIBRARY_LINKER____idf_esp_common
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -668,11 +744,11 @@ rule C_COMPILER____idf_esp_timer
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_timer
+rule C_STATIC_LIBRARY_LINKER____idf_esp_timer
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -697,11 +773,11 @@ rule C_COMPILER____idf_freertos
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_freertos
+rule C_STATIC_LIBRARY_LINKER____idf_freertos
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -716,11 +792,11 @@ rule C_COMPILER____idf_newlib
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_newlib
+rule C_STATIC_LIBRARY_LINKER____idf_newlib
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -735,11 +811,11 @@ rule CXX_COMPILER____idf_cxx
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_cxx
+rule C_STATIC_LIBRARY_LINKER____idf_cxx
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -754,11 +830,11 @@ rule C_COMPILER____idf_app_trace
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_app_trace
+rule C_STATIC_LIBRARY_LINKER____idf_app_trace
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -773,11 +849,11 @@ rule CXX_COMPILER____idf_asio
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_asio
+rule C_STATIC_LIBRARY_LINKER____idf_asio
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -792,11 +868,49 @@ rule C_COMPILER____idf_cbor
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_cbor
+rule C_STATIC_LIBRARY_LINKER____idf_cbor
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_unity
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_unity
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_cmock
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_cmock
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -811,11 +925,11 @@ rule C_COMPILER____idf_coap
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_coap
+rule C_STATIC_LIBRARY_LINKER____idf_coap
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -830,11 +944,11 @@ rule C_COMPILER____idf_console
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_console
+rule C_STATIC_LIBRARY_LINKER____idf_console
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -849,11 +963,11 @@ rule C_COMPILER____idf_nghttp
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_nghttp
+rule C_STATIC_LIBRARY_LINKER____idf_nghttp
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -868,11 +982,11 @@ rule C_COMPILER____idf_esp-tls
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp-tls
+rule C_STATIC_LIBRARY_LINKER____idf_esp-tls
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -897,11 +1011,11 @@ rule CXX_COMPILER____idf_esp32-camera
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp32-camera
+rule C_STATIC_LIBRARY_LINKER____idf_esp32-camera
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -916,30 +1030,11 @@ rule C_COMPILER____idf_esp_adc_cal
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_adc_cal
+rule C_STATIC_LIBRARY_LINKER____idf_esp_adc_cal
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_esp_gdbstub
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_gdbstub
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -954,11 +1049,11 @@ rule C_COMPILER____idf_esp_hid
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_hid
+rule C_STATIC_LIBRARY_LINKER____idf_esp_hid
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -973,11 +1068,11 @@ rule C_COMPILER____idf_tcp_transport
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_tcp_transport
+rule C_STATIC_LIBRARY_LINKER____idf_tcp_transport
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -992,11 +1087,11 @@ rule C_COMPILER____idf_esp_http_client
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_http_client
+rule C_STATIC_LIBRARY_LINKER____idf_esp_http_client
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1011,11 +1106,11 @@ rule C_COMPILER____idf_esp_http_server
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_http_server
+rule C_STATIC_LIBRARY_LINKER____idf_esp_http_server
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1030,11 +1125,11 @@ rule C_COMPILER____idf_esp_https_ota
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_https_ota
+rule C_STATIC_LIBRARY_LINKER____idf_esp_https_ota
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1049,11 +1144,11 @@ rule C_COMPILER____idf_protobuf-c
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_protobuf-c
+rule C_STATIC_LIBRARY_LINKER____idf_protobuf-c
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1068,11 +1163,11 @@ rule C_COMPILER____idf_protocomm
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_protocomm
+rule C_STATIC_LIBRARY_LINKER____idf_protocomm
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1087,11 +1182,11 @@ rule C_COMPILER____idf_mdns
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_mdns
+rule C_STATIC_LIBRARY_LINKER____idf_mdns
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1106,49 +1201,11 @@ rule C_COMPILER____idf_esp_local_ctrl
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_local_ctrl
+rule C_STATIC_LIBRARY_LINKER____idf_esp_local_ctrl
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_sdmmc
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_sdmmc
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_esp_serial_slave_link
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_serial_slave_link
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1163,11 +1220,11 @@ rule C_COMPILER____idf_esp_websocket_client
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_esp_websocket_client
+rule C_STATIC_LIBRARY_LINKER____idf_esp_websocket_client
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1182,11 +1239,11 @@ rule C_COMPILER____idf_expat
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_expat
+rule C_STATIC_LIBRARY_LINKER____idf_expat
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1201,11 +1258,30 @@ rule CXX_COMPILER____idf_wear_levelling
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_wear_levelling
+rule C_STATIC_LIBRARY_LINKER____idf_wear_levelling
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
+  restat = $RESTAT
+
+
+#############################################
+# Rule for compiling C files.
+
+rule C_COMPILER____idf_sdmmc
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  description = Building C object $out
+
+
+#############################################
+# Rule for linking C static library.
+
+rule C_STATIC_LIBRARY_LINKER____idf_sdmmc
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1220,11 +1296,11 @@ rule C_COMPILER____idf_fatfs
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_fatfs
+rule C_STATIC_LIBRARY_LINKER____idf_fatfs
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1239,11 +1315,11 @@ rule C_COMPILER____idf_freemodbus
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_freemodbus
+rule C_STATIC_LIBRARY_LINKER____idf_freemodbus
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1258,11 +1334,11 @@ rule C_COMPILER____idf_jsmn
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_jsmn
+rule C_STATIC_LIBRARY_LINKER____idf_jsmn
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1277,11 +1353,11 @@ rule C_COMPILER____idf_json
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_json
+rule C_STATIC_LIBRARY_LINKER____idf_json
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1306,11 +1382,11 @@ rule C_COMPILER____idf_libsodium
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_libsodium
+rule C_STATIC_LIBRARY_LINKER____idf_libsodium
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1325,11 +1401,11 @@ rule C_COMPILER____idf_mqtt
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_mqtt
+rule C_STATIC_LIBRARY_LINKER____idf_mqtt
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1344,11 +1420,11 @@ rule C_COMPILER____idf_openssl
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_openssl
+rule C_STATIC_LIBRARY_LINKER____idf_openssl
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1363,11 +1439,11 @@ rule C_COMPILER____idf_spiffs
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_spiffs
+rule C_STATIC_LIBRARY_LINKER____idf_spiffs
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1382,30 +1458,11 @@ rule C_COMPILER____idf_ulp
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_ulp
+rule C_STATIC_LIBRARY_LINKER____idf_ulp
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
-  restat = $RESTAT
-
-
-#############################################
-# Rule for compiling C files.
-
-rule C_COMPILER____idf_unity
-  depfile = $DEP_FILE
-  deps = gcc
-  command = /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
-  description = Building C object $out
-
-
-#############################################
-# Rule for linking CXX static library.
-
-rule CXX_STATIC_LIBRARY_LINKER____idf_unity
-  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1420,11 +1477,11 @@ rule C_COMPILER____idf_wifi_provisioning
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_wifi_provisioning
+rule C_STATIC_LIBRARY_LINKER____idf_wifi_provisioning
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 
@@ -1439,11 +1496,11 @@ rule C_COMPILER____idf_main
 
 
 #############################################
-# Rule for linking CXX static library.
+# Rule for linking C static library.
 
-rule CXX_STATIC_LIBRARY_LINKER____idf_main
+rule C_STATIC_LIBRARY_LINKER____idf_main
   command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ar qc $TARGET_FILE $LINK_FLAGS $in && /home/zack/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-ranlib $TARGET_FILE && $POST_BUILD
-  description = Linking CXX static library $TARGET_FILE
+  description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
 

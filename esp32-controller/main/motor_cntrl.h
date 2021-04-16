@@ -40,7 +40,13 @@ motor_t * setup_motor_pins(void);
 void update_motor_speed(void * args);
 static void IRAM_ATTR motor_speed_handler(void * arg);
 
-
+/*
+FUNCTION: update_motor_speed
+ARGS:     void * args (unused)
+RETURN    None
+USAGE:    Speed Calculation function manages 'instantaneous' speed. Likely needs to be sampled and smoothed. First to know when we have stopped (set the delay time to be less and add a timeout condition)
+ERRORS:   See  functions @https://docs.espressif.com/projects/esp-idf/en/v4.2/esp32/api-reference/peripherals/mcpwm.html?highlight=mcpwm_isr_register#_CPPv418mcpwm_isr_register12mcpwm_unit_tPFvPvEPviP13intr_handle_t
+*/
 void update_motor_speed(void * args){
     static encoder_t * encoder_mem;
     static struct timeval tv_now;
@@ -76,7 +82,14 @@ void update_motor_speed(void * args){
     }
 }
 
-
+/*
+FUNCTION: motor_speed_handler
+ARGS:     void * args (encoder_t *)
+RETURN    None
+USAGE:    Initialized by setup_motor_pins as the posedge detection handler for the motor encoders.
+          Every call to this function represents ~1 degree rotation in the motor.
+ERRORS:   See  functions @https://docs.espressif.com/projects/esp-idf/en/v4.2/esp32/api-reference/peripherals/mcpwm.html?highlight=mcpwm_isr_register#_CPPv418mcpwm_isr_register12mcpwm_unit_tPFvPvEPviP13intr_handle_t
+*/
 static void IRAM_ATTR motor_speed_handler(void * arg){
     encoder_t * encoder_mem;
     uint32_t mcpwm_intr_status;
@@ -119,6 +132,14 @@ static void IRAM_ATTR motor_speed_handler(void * arg){
     xQueueSendFromISR(motor_encoders_queue, &encoder_mem, NULL);
 }
 
+/*
+FUNCTION: setup_motor_pins
+ARGS:     None
+RETURN    None
+USAGE:    Initializes the MCPWM for esp32. Two PWM outputs with rising edge triggered encoder counter.
+          Make sure to allocate the memory for the motor_encoder_queue before calling this function
+ERRORS:   See MCPWM functions @https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/mcpwm.html?highlight=mcpwm#mcpwm
+*/
 motor_t * setup_motor_pins(){
     mcpwm_config_t pwm_config;
     encoder_t * encoders1 = calloc(2, sizeof(encoder_t));

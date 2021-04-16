@@ -57,14 +57,16 @@ static uint32_t pm_check_table[] = {
 // Main loop //
 void app_main(void)
 {
-    //Initialize NVS
-    /* esp_err_t ret = nvs_flash_init();
+    esp_err_t ret;
+    // Motor Variables
+    motor_t * motors;
+    int tempDuty1 = 35;
+    int tempDuty2 = 30;
+    int inc1 = -5;
+    int inc2 = -5;
+    int cam_socket;
 
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-      ESP_ERROR_CHECK(nvs_flash_erase());
-      ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret); */
+
     printf("Hello Zack!\n");
     
     //learning_led();
@@ -74,26 +76,19 @@ void app_main(void)
     //learning_eventGroups();
 
 
-    //float * speed = setup_motor_encoders();
-    motor_t * motors;
-    int tempDuty1 = 35;
-    int tempDuty2 = 30;
-    int inc1 = -5;
-    int inc2 = -5;
+    // Initialize NVS flash
+    ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+      ESP_ERROR_CHECK(nvs_flash_erase());
+      ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
 
-    
-    ESP_ERROR_CHECK(nvs_flash_init());
-    ESP_ERROR_CHECK(esp_netif_init());
-    
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    	// initialize the tcp stack
-	tcpip_adapter_init();
-
-
+    // Setup wifi, get an IP from DHCP, register the IP with DNS, connect to cameras, issue stream request
     start_stream();
-
+    
+    // Setup Motors
     motor_encoders_queue = xQueueCreate(4, sizeof(int * ));
-
     xTaskCreate(update_motor_speed, "MTRSPD", 4096, NULL, 5, NULL);
     motors = setup_motor_pins();
 
@@ -108,23 +103,24 @@ void app_main(void)
         gpio_set_level(MOTOR1_DIR, (inc1 > 0)? 1:0);
         gpio_set_level(MOTOR2_DIR, (inc2 > 0)? 1:0);
         
-        if (tempDuty1 > 79){
-            inc1 = -5;
-        }else if(tempDuty1 < 21){
-            inc1 = 5;
+        if (tempDuty1 > 30){
+            inc1 = -1;
+        }else if(tempDuty1 <= 2){
+            inc1 = 1;
         }
 
-        if (tempDuty1 > 79){
-            inc2 = -5;
-        }else if(tempDuty1 < 21){
-            inc2 = 5;
-        } 
+        if (tempDuty2 > 30){
+            inc2 = -1;
+        }else if(tempDuty2 <= 2){
+            inc2 = 1;
+        }
 
-        tempDuty1 = tempDuty1;// + inc1;
-        tempDuty2 = tempDuty2;// + inc2;
-
+        tempDuty1 = tempDuty1 + inc1;
+        tempDuty2 = tempDuty2 + inc2;
+        #ifdef DEBUG_I
         printf("Duty Cycle 1: %d\n", tempDuty1 ); 
         printf("Duty Cycle 2: %d\n", tempDuty2 );
+        #endif
     }
 }
 

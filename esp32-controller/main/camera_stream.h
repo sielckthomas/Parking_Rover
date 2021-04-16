@@ -9,6 +9,8 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include <mdns.h>
+#include "wifi_provisioning/manager.h"
+#include "wifi_provisioning/scheme_softap.h"
 
 // Setup Constants to Connect to Evans Scholars Wifi
 #define STA_SSID "zPyConnection"
@@ -22,21 +24,32 @@
 #define AP_PASSWORD "Parking_Rover"
 #define AP_PASSWORD_LEN strlen(AP_PASSWORD)
 #define MYADDR "127.0.0.1"
-#define MYPORT 333
+#define MYPORT 80
 #define DEBUG
+//#define PROMIS
 //#define DEBUG_I
 
+typedef struct socket_info_t{
+  int sock_fd;
+  struct sockaddr_in addr;
+}socket_info_t;
 
 static void initialize_wifi(void);
 void run_on_event(void* handler_arg, esp_event_base_t base, int32_t id, void* event_data);
-void wifi_rx_handler(void *buf, wifi_promiscuous_pkt_type_t type);
-void schedule_wifi_handlers(void);
+void wifi_rx_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
+socket_info_t * initialize_socket(void);
+void mdns_print_results(mdns_result_t * results);
+void find_mdns_service(const char * service_name, const char * proto);
+static void start_stream(void);
+void handle_camera_socket(void * args);
 
 static const char TAG[50] = "example:http_jpg";
 static const char _ap_ssid_[50] = AP_SSID;
 static const char _sta_ssid_[50] = STA_SSID;
 static const char _ap_password_[50] = AP_PASSWORD;
 static const char _sta_password_[50] = STA_PASSWORD;
+static const char * if_str[] = {"STA", "AP", "ETH", "MAX"};
+static const char * ip_protocol_str[] = {"V4", "V6", "MAX"};
 
 
 #define OPENSSL_EXAMPLE_SERVER_ACK "HTTP/1.1 200 OK\r\n" \

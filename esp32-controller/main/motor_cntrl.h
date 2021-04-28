@@ -3,16 +3,16 @@
 #include "freertos/FreeRTOS.h"
 
 // MOTOR1 setup pins
-#define MOTOR1_ENCODER1 25 // A0
-#define MOTOR1_ENCODER2 26 // A1
+#define MOTOR1_ENCODER1 32 // A0
+#define MOTOR1_ENCODER2 33 // A1
 #define MOTOR1_PWM 22
-#define MOTOR1_DIR 32
+#define MOTOR1_DIR 25
 
 // MOTOR2 setup pins *A3 & A4 are off limits for wifi purposes ->see gpio.h
-#define MOTOR2_ENCODER1 17 // 
-#define MOTOR2_ENCODER2 21 // 
+#define MOTOR2_ENCODER1 34 // 
+#define MOTOR2_ENCODER2 35 // 
 #define MOTOR2_PWM 23
-#define MOTOR2_DIR 14
+#define MOTOR2_DIR 26
 
 #define WHEEL_DIAMETER 1
 

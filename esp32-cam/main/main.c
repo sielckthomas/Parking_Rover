@@ -5,13 +5,15 @@
 #define DEV_DEBUG_PRESENT
 
 
+
 // Main loop //
 void app_main(void)
 {
+  int sock;
   //Initialize NVS
   //static httpd_handle_t server = NULL;
   esp_err_t ret = nvs_flash_init();
-  QueueHandle_t imageStreamHandle = 0;
+  //QueueHandle_t imageStreamHandle = 0;
   BaseType_t getImagesHandle = 0;
 
   ret = nvs_flash_init();
@@ -22,24 +24,38 @@ void app_main(void)
   ESP_ERROR_CHECK(ret);
 
   // See __imageBuf in camera_stream.h
-  imageStreamHandle = xQueueCreate(IMAGE_BUFF_SIZE, IMAGE_SIZE);
-
+  /*imageStreamHandle = xQueueCreate(_IMAGE_BUFF_SIZE, _IMAGE_SIZE);
+  if(imageStreamHandle == 0){
+    printf("Failed to Create the Q\nRestarting...\n\n");
+    return;
+  }
+  */
   printf("Hello Zack!\n");
-  initialise_wifi();
-  //init_sdcard();
+  // Initialize NVS flash
+  ret = nvs_flash_init();
+  if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    ESP_ERROR_CHECK(nvs_flash_erase());
+    ret = nvs_flash_init();
+  }
+  ESP_ERROR_CHECK(ret);
+
   init_camera();
   #ifdef DEBUG
     printf("camera successfully init\n");
   #endif
+  vTaskDelay(500); // Give the main controller time to start it's access point
+  initialise_wifi();
+  //init_sdcard();
   
+  sock = open_socket();
   // Create the task without using any dynamic memory allocation.
   getImagesHandle = xTaskCreate(
                   get_images,       // Function that implements the task.
                   "TAKEPICS",          // Text name for the task.
                   STACK_SIZE,      // Stack size in bytes, not words.
-                  &imageStreamHandle,    // Parameter passed into the task.
+                  &sock,    // Parameter passed into the task.
                   5,// Priority at which the task is created.
-                  &getImagesHandle );  // Variable to hold the task's data structure.
+                  NULL );  // Variable to hold the task's data structure.
   
   #ifdef DEBUG
     printf("camera taking pics\n");

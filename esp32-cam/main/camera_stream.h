@@ -18,6 +18,11 @@
 #include <esp_wifi.h>
 #include <esp_http_server.h>
 
+#include <sys/socket.h>
+#include <mdns.h>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <netdb.h>
 
 
 // DEFINE THE IMAGE BUFFER SIZE as number of images in the buffer
@@ -32,6 +37,7 @@
 
 #define STACK_SIZE 4096
 #define BOARD_ESP32CAM_AITHINKER
+#define MYPORT 80
 #define DEBUG
 //#define PERF_MON_EN
 
@@ -111,6 +117,13 @@ void perfMon(void * called_function);
 static void IRAM_ATTR get_images(void * args);
 static esp_err_t init_camera();
 static void init_sdcard();
+void initialise_wifi(void);
+int open_socket(void);
+
+esp_err_t camera_start(void);
+esp_err_t camera_capture();
+esp_err_t jpg_stream_httpd_handler(httpd_req_t *req);
+
 
 
 #ifdef PERF_MON_EN

@@ -103,6 +103,11 @@ void app_main(void)
         gpio_set_level(MOTOR1_DIR, (inc1 > 0)? 1:0);
         gpio_set_level(MOTOR2_DIR, (inc2 > 0)? 1:0);
         
+        if(motors[0].speed > motors[1].speed){
+            
+        }else if(motors[0].speed < motors[1].speed){
+            
+        }
         if (tempDuty1 > 30){
             inc1 = -1;
         }else if(tempDuty1 <= 2){

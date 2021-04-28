@@ -119,17 +119,6 @@ socket_info_t * initialize_socket(void){
   memset(&wifi_sta_list, 0, sizeof(wifi_sta_list));
   memset(&ip_sta_list, 0, sizeof(ip_sta_list));
 
-  #ifdef DEBUG
-      printf("Trying to open socket\n");
-  #endif
-
-  s_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (s_fd == -1) { 
-	  #ifdef DEBUG
-      printf("Failed to open socket\n");
-    #endif
-    return;
-	}
 
   #ifdef DEBUG
     printf("Getting station info\n");
@@ -163,6 +152,19 @@ socket_info_t * initialize_socket(void){
     cam_addr.sin_port = htons(MYPORT);
   }
 
+
+  #ifdef DEBUG
+      printf("Trying to open socket\n");
+  #endif
+
+  s_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (s_fd == -1) { 
+	  #ifdef DEBUG
+      printf("Failed to open socket\n");
+    #endif
+    return;
+	}
+
 	if (bind(s_fd, (struct sockaddr *)&cam_addr, sizeof(cam_addr)) == -1) {
 		perror("bind");
 	}
@@ -171,10 +173,10 @@ socket_info_t * initialize_socket(void){
     perror("listen");
   }
 
-
   #ifdef DEBUG
   printf("\nSuccess!\n");
   #endif
+  
   new_sock = accept(s_fd,&cam_addr, sizeof(cam_addr));
   if(new_sock < 0){
     perror("accept");
